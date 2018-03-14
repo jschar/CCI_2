@@ -9,6 +9,87 @@
 
 using namespace std;
 
+class ArrQue {
+private:
+	int *arr;
+	int size;
+	int capacity;
+	int start;
+	int end;
+
+public:
+	ArrQue();
+	void enQueue(int inData);
+	int deQueue();
+	int front();
+	void doubleArray();
+	void halfArray();
+	void rebuildArray();
+
+};
+
+ArrQue::ArrQue(): arr(new int[10]()), size(0), capacity(10), start(0), end(0){
+
+}
+
+/*
+	enQueue(int)
+	inData: element to add to the end of the queue.
+
+		
+*/
+void ArrQue::enQueue(int inData){
+	if(size == capacity){
+		this->doubleArray();
+	}
+	end = (end+1)%capacity;
+	arr[end] = inData;
+	size++;
+}
+
+int ArrQue::deQueue(){
+	if(size <= 0){ return INT_MIN; }
+	int rVal = arr[end];
+	arr[end] = INT_MIN;
+	end--;
+	if(end <= -1){ end = capacity-1; }
+	size--;
+	if(capacity > 10 && size == capacity/4){
+		this->halfArray();
+	}
+	return rVal;
+}
+
+int ArrQue::front(){
+	return (size > 0)?arr[start]:INT_MIN;
+}
+
+void ArrQue::doubleArray(){
+	int *tArr = new int[capacity*2]();
+	int index = 0;
+	while(this->front() != INT_MIN){
+		tArr[index] = this->deQueue();
+		index++;
+	}
+	start = 0;
+	end = index-1;
+	delete this->arr;
+	this->arr = tArr;
+}
+
+void ArrQue::halfArray(){
+	int *tArr = new int[capacity/2]();
+	int index = 0;
+	while(this->front() != INT_MIN){
+		tArr[index] = this->deQueue();
+		index++;
+	}
+	start = 0;
+	end = index - 1;
+	delete this->arr;
+	this->arr = tArr;
+}
+
 fstream* openFile(const string &fName);
 void lastKlines(const string& fName, int k);
 
